@@ -294,4 +294,49 @@ h2 {
 .submit-btn:hover {
     background: #000;
     letter-spacing: 2px;
+
+}
+
+/* --- モバイル対応 (画面幅 768px 以下) --- */
+@media (max-width: 768px) {
+    /* ヘッダーの余白を調整 */
+    header {
+        padding: 1rem;
+    }
+
+    nav ul {
+        gap: 1rem;
+    }
+
+    nav a {
+        font-size: 0.8rem;
+    }
+
+    /* ヒーローセクションの文字サイズ */
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    /* セクションのパディングを小さく */
+    section {
+        padding: 60px 1.5rem;
+    }
+
+    /* カルーセル：スマホでは1枚ずつ表示 */
+    .work-card {
+        min-width: 100%; /* 横幅いっぱいにする */
+        height: 300px;
+    }
+
+    /* SNS：縦並び、または適切な余白で配置 */
+    .sns-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 1.5rem;
+    }
+
+    /* コンタクトフォーム：幅を画面いっぱいまで広げる */
+    #contact-form {
+        width: 100%;
+    }
 }
