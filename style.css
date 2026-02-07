@@ -9,7 +9,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* 全ての要素で幅の計算を正しくする */
 }
 
 body {
@@ -25,18 +25,11 @@ header {
     position: fixed;
     top: 0;
     width: 100%;
-    padding: 1.5rem 2rem; /* 少しスリムに調整 */
-
-    /* 背景色：グレーの不透明度を 0.7 程度に下げて透明感を出す */
-    background: rgba(245, 245, 245, 0.5);
-
-    /* 背後のコンテンツをぼかす（これが透明感を綺麗に見せるコツです） */
-    backdrop-filter: blur(12px); 
-    -webkit-backdrop-filter: blur(12px); /* Safari対応 */
-
-    /* 境界線をさらに細く、馴染む色に */
+    padding: 1.2rem 2rem;
+    background: rgba(245, 245, 245, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-
     z-index: 1000;
 }
 
@@ -60,180 +53,21 @@ nav a {
     font-weight: 500;
     font-size: 0.9rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-/* Sections General */
+/* Sections */
 section {
     padding: 100px 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    text-align: center;
 }
 
 h2 {
     font-size: 2rem;
     margin-bottom: 3rem;
-    text-align: center;
 }
 
-/* Hero */
-.hero {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.hero h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    letter-spacing: -2px;
-}
-
-/* Carousel */
-.carousel-container {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    cursor: grab; /* 掴めるようなアイコンにする */
-}
-
-/* クリックしている間（active）の状態も追記 */
-.carousel-container:active {
-    cursor: grabbing; /* 掴んでいるアイコン */
-}
-
-.carousel-track {
-    display: flex;
-    gap: 20px;
-    will-change: transform;
-}
-
-/* Work Card のアップグレード */
-.work-card {
-    min-width: calc(33.333% - 14px);
-    height: 350px; /* 高さを少し出しました */
-    background: var(--gray-light);
-    display: flex;
-    align-items: flex-end; /* 下側にテキストを配置 */
-    padding: 2rem;
-    text-decoration: none; /* リンクの下線を消す */
-    color: var(--text-color);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-    transition: var(--transition);
-    user-select: none;
-    -webkit-user-drag: none;
-}
-
-.work-card:hover {
-    transform: translateY(-10px);
-    background: #ebeabe; /* ホバー時の色（お好みで変えてください） */
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-}
-
-.work-content {
-    z-index: 2;
-}
-
-.work-category {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #888;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-
-.work-title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.work-view {
-    font-size: 0.8rem;
-    font-weight: bold;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: var(--transition);
-}
-
-.work-card:hover .work-view {
-    opacity: 1;
-    transform: translateX(0);
-}
-
-.carousel-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2rem;
-}
-
-.carousel-buttons button {
-    padding: 10px 20px;
-    border: 1px solid var(--accent-color);
-    background: transparent;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.carousel-buttons button:hover {
-    background: var(--accent-color);
-    color: white;
-}
-
-.carousel-track {
-    /* スムーズに動くように transition を再確認 */
-    display: flex;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    gap: 20px;
-    will-change: transform; /* ブラウザのアニメーションを最適化 */
-}
-
-/* SNS Section - Simple Link Style */
-.sns-list {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    padding: 0;
-}
-
-.sns-list li a {
-    text-decoration: none;
-    color: var(--text-color);
-    font-size: 1.1rem;
-    font-weight: 500;
-    position: relative;
-    padding-bottom: 4px;
-    transition: var(--transition);
-}
-
-.sns-list li a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background-color: var(--text-color);
-    transition: width 0.3s ease;
-}
-
-.sns-list li a:hover::after {
-    width: 100%;
-}
-
-.sns-list li a:hover {
-    opacity: 0.6;
-}
-
-
-/* Fade-in Animation */
 .fade-in {
     opacity: 0;
     transform: translateY(30px);
@@ -245,117 +79,81 @@ h2 {
     transform: translateY(0);
 }
 
-/* Contact セクション全体 */
-#contact {
-    max-width: 800px; /* セクション自体の幅 */
-    margin: 0 auto;
-    text-align: center; /* タイトルなどを中央へ */
-}
-
-.contact-text {
-    text-align: center; /* 明示的に中央揃え */
-    margin-bottom: 3rem;
-    color: #666;
-    font-size: 0.95rem;
-}
-
-/* フォーム本体 */
-#contact-form {
-    max-width: 500px; /* フォームの最大幅を固定 */
-    margin: 0 auto;   /* フォーム自体を中央に寄せる */
+/* Hero */
+.hero {
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
 }
 
-/* 各入力項目のコンテナ */
-.form-item {
-    width: 100%; /* 親の500pxいっぱいに広げる */
-    margin-bottom: 1.5rem;
+.hero h1 { font-size: 4rem; margin-bottom: 1rem; }
+
+/* Works (Carousel) */
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    cursor: grab;
 }
 
-/* 入力ボックス（Name, Email, Message共通） */
-#contact-form input, 
-#contact-form textarea {
-    width: 100%; /* これで幅が完全に揃います */
-    padding: 1rem;
-    border: 1px solid #eee; /* 薄い枠線で清潔感を出す */
-    border-bottom: 1px solid #333; /* 下線だけ強調してモダンに */
-    background: #fafafa;
-    outline: none;
-    font-family: inherit;
-    box-sizing: border-box; /* パディングを含めて幅を計算 */
+.carousel-container:active { cursor: grabbing; }
+
+.carousel-track {
+    display: flex;
+    gap: 20px;
+    will-change: transform;
+}
+
+.work-card {
+    min-width: calc(33.333% - 14px);
+    height: 350px;
+    background: var(--gray-light);
+    display: flex;
+    align-items: flex-end;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--text-color);
+    border-radius: 12px;
     transition: var(--transition);
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
-/* ホバー・フォーカス時の挙動 */
-#contact-form input:focus, 
-#contact-form textarea:focus {
+.work-card:hover {
+    transform: translateY(-10px);
     background: #fff;
-    border-color: var(--text-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
 }
 
-/* 送信ボタンの幅も合わせる */
-.submit-btn {
-    width: 100%; 
-    padding: 1.2rem;
-    background: var(--accent-color);
-    color: white;
-    border: none;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
+.work-content { text-align: left; }
+.work-category { font-size: 0.7rem; color: #888; display: block; }
+.work-view { font-size: 0.8rem; font-weight: bold; opacity: 0; transition: 0.3s; }
+.work-card:hover .work-view { opacity: 1; }
+
+.carousel-buttons { margin-top: 2rem; display: flex; justify-content: center; gap: 1rem; }
+.carousel-buttons button { padding: 10px 20px; border: 1px solid #333; background: none; cursor: pointer; }
+
+/* SNS */
+.sns-list { list-style: none; display: flex; justify-content: center; gap: 3rem; }
+.sns-list li a { text-decoration: none; color: var(--text-color); position: relative; padding-bottom: 4px; }
+.sns-list li a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 1px; background: #000; transition: 0.3s; }
+.sns-list li a:hover::after { width: 100%; }
+
+/* Contact */
+#contact-form { max-width: 500px; margin: 0 auto; display: flex; flex-direction: column; width: 100%; }
+.form-item { width: 100%; margin-bottom: 1.5rem; }
+#contact-form input, #contact-form textarea {
+    width: 100%; padding: 1rem; border: 1px solid #eee; border-bottom: 1px solid #333;
+    background: #fafafa; outline: none; font-family: inherit; box-sizing: border-box; transition: 0.3s;
 }
+.submit-btn { width: 100%; padding: 1.2rem; background: #333; color: white; border: none; cursor: pointer; }
+.submit-btn:hover { background: #000; letter-spacing: 2px; }
 
-.submit-btn:hover {
-    background: #000;
-    letter-spacing: 2px;
-
-}
-
-/* --- モバイル対応 (画面幅 768px 以下) --- */
+/* Responsive */
 @media (max-width: 768px) {
-    /* ヘッダーの余白を調整 */
-    header {
-        padding: 1rem;
-    }
-
-    nav ul {
-        gap: 1rem;
-    }
-
-    nav a {
-        font-size: 0.8rem;
-    }
-
-    /* ヒーローセクションの文字サイズ */
-    .hero h1 {
-        font-size: 2.5rem;
-    }
-
-    /* セクションのパディングを小さく */
-    section {
-        padding: 60px 1.5rem;
-    }
-
-    /* カルーセル：スマホでは1枚ずつ表示 */
-    .work-card {
-        min-width: 100%; /* 横幅いっぱいにする */
-        height: 300px;
-    }
-
-    /* SNS：縦並び、または適切な余白で配置 */
-    .sns-list {
-        flex-direction: column;
-        align-items: center;
-        gap: 1.5rem;
-    }
-
-    /* コンタクトフォーム：幅を画面いっぱいまで広げる */
-    #contact-form {
-        width: 100%;
-    }
+    .hero h1 { font-size: 2.5rem; }
+    .work-card { min-width: 100%; }
+    .sns-list { flex-direction: column; gap: 1.5rem; }
 }
-
-
-
