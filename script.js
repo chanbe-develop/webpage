@@ -66,10 +66,10 @@ track.addEventListener('touchstart', (e) => {
     isMoving = false;
     track.style.transition = 'none';
 
-    // 【重要】タッチした瞬間の「今の見た目上の位置」を正確に取得してリセット
+    // 【重要】タッチした瞬間に、ブラウザが今表示している「生の座標」を取得し直す
     const style = window.getComputedStyle(track);
     const matrix = new WebKitCSSMatrix(style.transform);
-    prevTranslate = matrix.m41; 
+    prevTranslate = matrix.m41; // これで02にいてもその座標からスタートできる
 }, { passive: true });
 
 track.addEventListener('touchmove', (e) => {
@@ -77,10 +77,9 @@ track.addEventListener('touchmove', (e) => {
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
 
-    // 10px以上動いたら「スワイプ中」とみなし、リンクを無効化
     if (Math.abs(diff) > 10) isMoving = true;
 
-    // 指の動きに1:1で追従させる
+    // 指の動きに完全に同期させる
     track.style.transform = `translateX(${prevTranslate + diff}px)`;
 }, { passive: true });
 
@@ -88,21 +87,22 @@ track.addEventListener('touchend', (e) => {
     if (!isDragging) return;
     isDragging = false;
 
+    const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
+    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
+    const maxIndex = track.children.length - visibleCards; // ここで限界を再計算
+
     const diff = e.changedTouches[0].clientX - startX;
     const threshold = 50; 
-    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
 
-    // 左右の判定
-    if (diff < -threshold && index < track.children.length - visibleCards) {
-        index++;
+    // 左右判定をシンプルに
+    if (diff < -threshold && index < maxIndex) {
+        index++; // 次へ
     } else if (diff > threshold && index > 0) {
-        index--;
+        index--; // 前へ
     }
-    // それ以外の微小な動き、または端の場合は元の index の位置に戻る
+    // 端に到達している場合や動きが小さい場合は、updateCarouselPositionで元の位置へ綺麗に戻す
 
     updateCarouselPosition();
-    
-    // スワイプ終了後、少し遅れてリンクを有効化
     setTimeout(() => { isMoving = false; }, 100);
 });
 
