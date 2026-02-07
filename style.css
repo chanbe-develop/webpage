@@ -97,6 +97,12 @@ h2 {
     position: relative;
     overflow: hidden;
     width: 100%;
+    cursor: grab; /* 掴めるようなアイコンにする */
+}
+
+/* クリックしている間（active）の状態も追記 */
+.carousel-container:active {
+    cursor: grabbing; /* 掴んでいるアイコン */
 }
 
 .carousel-track {
@@ -340,3 +346,4 @@ h2 {
         width: 100%;
     }
 }
+
