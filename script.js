@@ -86,30 +86,30 @@ track.addEventListener('click', (e) => {
     }
 }, true); // 「true」にしてイベントを早めにキャッチするのがコツです
 
+// 5. カルーセル：リアルタイム・スワイプ (決定版)
 track.addEventListener('touchend', () => {
     isDragging = false;
     const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
 
-    // 指を離した瞬間の正確な位置を取得
-    const movedBy = parseFloat(track.style.transform.replace('translateX(', '').replace('px)', ''));
-    
-    // 【修正ポイント】移動距離の差分を計算
-    const diff = movedBy - prevTranslate;
+    // 1. 現在の「生の移動量」を正確に取得する
+    const matrix = new WebKitCSSMatrix(window.getComputedStyle(track).transform);
+    const currentX = matrix.m41; // 現在のtranslateXの値
 
-    // 50px以上動いていたら、半分まで行ってなくても次（または前）のカードへ
-    const threshold = 25; 
+    // 2. 指を動かした「方向」と「距離」を判定
+    const swipeDistance = currentX - prevTranslate; // prevTranslateからの差分
+    const threshold = 50; // 50px動いていたら移動とみなす
 
-    if (diff < -threshold && index < maxIndex) {
-        // 左へスワイプ（次へ）
+    if (swipeDistance < -threshold && index < maxIndex) {
+        // 次のカードへ
         index++;
-    } else if (diff > threshold && index > 0) {
-        // 右へスワイプ（前へ）
+    } else if (swipeDistance > threshold && index > 0) {
+        // 前のカードへ
         index--;
     }
-    // それ以外の微小な動きなら、現在の index の位置に戻る
 
+    // 3. 最終的な位置を確定させて、アニメーションさせる
     updateCarouselPosition();
     
     setTimeout(() => { isMoving = false; }, 100);
@@ -139,6 +139,7 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
 
 
 
