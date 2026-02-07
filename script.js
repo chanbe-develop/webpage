@@ -67,38 +67,31 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 
-// --- カルーセルのスワイプ（フリック）対応 ---
+// --- カルーセルのスワイプ対応（ブラッシュアップ版） ---
 let touchStartX = 0;
-let touchEndX = 0;
 
-// 指が触れた時
+// 指が触れた位置を記録
 track.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
 }, { passive: true });
 
-// 指が離れた時
+// 指が離れた時に距離を計算して動かす
 track.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX;
-    handleSwipe();
-}, { passive: true });
+    const touchEndX = e.changedTouches[0].screenX;
+    const swipeDistance = touchStartX - touchEndX; // 動いた距離
+    const swipeThreshold = 30; // 判定を少し甘く（30px）して反応を良くする
 
-// スワイプ判定
-function handleSwipe() {
-    const swipeThreshold = 50; // 50px以上動いたらスワイプとみなす
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
 
-    if (touchStartX - touchEndX > swipeThreshold) {
-        // 左へスワイプ（次へ）
-        if (index < maxIndex) {
-            index++;
-            moveCarousel();
+    if (Math.abs(swipeDistance) > swipeThreshold) {
+        if (swipeDistance > 0) {
+            // 右から左へスワイプ（次へ）
+            if (index < maxIndex) index++;
+        } else {
+            // 左から右へスワイプ（前へ）
+            if (index > 0) index--;
         }
-    } else if (touchEndX - touchStartX > swipeThreshold) {
-        // 右へスワイプ（前へ）
-        if (index > 0) {
-            index--;
-            moveCarousel();
-        }
+        moveCarousel();
     }
-}
+}, { passive: true });
