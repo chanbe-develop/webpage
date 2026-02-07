@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio | Minimal & Modern</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <header>
+    <nav>
+      <div class="logo">PORTFOLIO</div>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#works">Works</a></li>
+        <li><a href="#sns">SNS</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero fade-in">
+      <h1>Creative Developer</h1>
+      <p>シンプルさと機能性を追求した制作を目指しています。</p>
+    </section>
+
+    <section id="about" class="about fade-in">
+      <h2>About Me</h2>
+      <div class="about-content">
+        <p>大学でプログラミングやデータサイエンスを学んでいます。JavaScriptを中心に、使い心地の良いWebサイト制作を目指しています。</p>
+      </div>
+    </section>
+
+    <section id="works" class="works fade-in">
+    <h2>Works</h2>
+    <div class="carousel-container">
+        <div class="carousel-track">
+            <a href="https://example.com/project01" class="work-card">
+                <div class="work-content">
+                    <span class="work-category">Web Development</span>
+                    <h3 class="work-title">Project 01</h3>
+                    <p class="work-view">View Project →</p>
+                </div>
+            </a>
+            
+            <a href="https://example.com/project02" class="work-card">
+                <div class="work-content">
+                    <span class="work-category">Music Theory</span>
+                    <h3 class="work-title">Project 02</h3>
+                    <p class="work-view">View Project →</p>
+                </div>
+            </a>
+
+            <a href="https://example.com/project03" class="work-card">
+                <div class="work-content">
+                    <span class="work-category">Data Science</span>
+                    <h3 class="work-title">Project 03</h3>
+                    <p class="work-view">View Project →</p>
+                </div>
+            </a>
+
+            <a href="https://example.com/project04" class="work-card">
+                <div class="work-content">
+                    <span class="work-category">App Design</span>
+                    <h3 class="work-title">Project 04</h3>
+                    <p class="work-view">View Project →</p>
+                </div>
+            </a>
+        </div>
+        <div class="carousel-buttons">
+            <button id="prevBtn">←</button>
+            <button id="nextBtn">→</button>
+        </div>
+    </div>
+</section>
+
+    <section id="sns" class="sns fade-in">
+    <h2>Social Media</h2>
+    <ul class="sns-list">
+        <li><a href="https://x.com/kuroma78459508" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+        <li><a href="https://note.com/light_racoon7523" target="_blank" rel="noopener noreferrer">note</a></li>
+        <li><a href="https://github.com/chanbe-develop" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+    </ul>
+</section>
+
+<section id="contact" class="contact fade-in">
+    <h2>Contact</h2>
+    <p class="contact-text">お仕事の依頼やお問い合わせは、以下のフォームまたはSNSのDMよりお願いいたします。</p>
+
+    <form id="contact-form">
+        <div class="form-item">
+            <input type="text" placeholder="Name" required>
+        </div>
+        <div class="form-item">
+            <input type="email" placeholder="Email" required>
+        </div>
+        <div class="form-item">
+            <textarea placeholder="Message" rows="5" required></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+</section>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 My Portfolio. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
