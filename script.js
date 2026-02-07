@@ -10,6 +10,7 @@ let startX = 0;         // タッチ開始位置
 let currentTranslate = 0; // 現在の移動量（px）
 let prevTranslate = 0;    // 前回の確定移動量（px）
 let isDragging = false; // ドラッグ中フラグ
+let isMoving = false; // スワイプ中かどうかを判定するフラグ
 
 // ==========================================
 // 2. 共通アニメーション関数
@@ -60,31 +61,38 @@ track.addEventListener('wheel', (e) => {
 track.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
     isDragging = true;
-    track.style.transition = 'none'; // 指で動かしている間はアニメをオフ
+    isMoving = false; // 最初は動いていない
+    track.style.transition = 'none';
 }, { passive: true });
 
 track.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
+
+    // 10px以上動いたら「スワイプ中」とみなす
+    if (Math.abs(diff) > 10) {
+        isMoving = true; 
+    }
+
     track.style.transform = `translateX(${prevTranslate + diff}px)`;
 }, { passive: true });
 
+// --- 重要：スワイプ中のクリックを防止する ---
+track.addEventListener('click', (e) => {
+    if (isMoving) {
+        e.preventDefault(); // スワイプ中ならリンクを飛ばさない
+        e.stopImmediatePropagation(); // 他のイベントも止める
+    }
+}, true); // 「true」にしてイベントを早めにキャッチするのがコツです
+
 track.addEventListener('touchend', () => {
     isDragging = false;
-    const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
-    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
-    const maxIndex = track.children.length - visibleCards;
-
-    // 現在の位置から一番近いカードを計算
-    const movedBy = parseFloat(track.style.transform.replace('translateX(', '').replace('px)', ''));
-    index = Math.round(-movedBy / cardWidth);
-
-    // 範囲外ガード
-    if (index < 0) index = 0;
-    if (index > maxIndex) index = maxIndex;
-
+    // ...（中略：これまでのtouchendの処理はそのまま）...
     updateCarouselPosition();
+    
+    // 少し遅らせてから移動フラグをリセット（クリック判定との競合防止）
+    setTimeout(() => { isMoving = false; }, 100);
 });
 
 // ==========================================
@@ -111,3 +119,4 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
