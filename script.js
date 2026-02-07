@@ -19,9 +19,14 @@ let isMoving = false; // スワイプ中かどうかを判定するフラグ
 // カルーセルを特定の位置まで動かす
 function updateCarouselPosition() {
     const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
-    prevTranslate = -index * cardWidth;
-    track.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-    track.style.transform = `translateX(${prevTranslate}px)`;
+    // indexに基づいて正しい位置を再計算
+    const targetTranslate = -index * cardWidth;
+    
+    track.style.transition = 'transform 0.5s cubic-bezier(0.23, 1, 0.32, 1)';
+    track.style.transform = `translateX(${targetTranslate}px)`;
+    
+    // 次のスワイプのために確定位置を保存
+    prevTranslate = targetTranslate;
 }
 
 // ==========================================
@@ -61,20 +66,23 @@ track.addEventListener('wheel', (e) => {
 track.addEventListener('touchstart', (e) => {
     startX = e.touches[0].clientX;
     isDragging = true;
-    isMoving = false; // 最初は動いていない
+    isMoving = false;
     track.style.transition = 'none';
+    
+    // 現在の表示位置を数値として取得して保持
+    const style = window.getComputedStyle(track);
+    const matrix = new WebKitCSSMatrix(style.transform);
+    prevTranslate = matrix.m41; 
 }, { passive: true });
 
-track.addEventListener('touchmove', (e) => {
+rack.addEventListener('touchmove', (e) => {
     if (!isDragging) return;
     const currentX = e.touches[0].clientX;
     const diff = currentX - startX;
 
-    // 10px以上動いたら「スワイプ中」とみなす
-    if (Math.abs(diff) > 10) {
-        isMoving = true; 
-    }
+    if (Math.abs(diff) > 10) isMoving = true;
 
+    // 指の動きに合わせてリアルタイム移動
     track.style.transform = `translateX(${prevTranslate + diff}px)`;
 }, { passive: true });
 
@@ -87,31 +95,29 @@ track.addEventListener('click', (e) => {
 }, true); // 「true」にしてイベントを早めにキャッチするのがコツです
 
 // 5. カルーセル：リアルタイム・スワイプ (決定版)
-track.addEventListener('touchend', () => {
+track.addEventListener('touchend', (e) => {
+    if (!isDragging) return;
     isDragging = false;
+    
     const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
 
-    // 1. 現在の「生の移動量」を正確に取得する
-    const matrix = new WebKitCSSMatrix(window.getComputedStyle(track).transform);
-    const currentX = matrix.m41; // 現在のtranslateXの値
+    // 指を離した瞬間の位置を確認
+    const endX = e.changedTouches[0].clientX;
+    const diff = endX - startX; // 動かした距離と方向
+    const threshold = 50; // 50px以上で発動
 
-    // 2. 指を動かした「方向」と「距離」を判定
-    const swipeDistance = currentX - prevTranslate; // prevTranslateからの差分
-    const threshold = 50; // 50px動いていたら移動とみなす
-
-    if (swipeDistance < -threshold && index < maxIndex) {
-        // 次のカードへ
-        index++;
-    } else if (swipeDistance > threshold && index > 0) {
-        // 前のカードへ
-        index--;
+    if (diff < -threshold) {
+        // 右から左へ（次へ）
+        if (index < maxIndex) index++;
+    } else if (diff > threshold) {
+        // 左から右へ（前へ）
+        if (index > 0) index--;
     }
+    // それ以外（微小な動き）なら元の index の位置に戻る
 
-    // 3. 最終的な位置を確定させて、アニメーションさせる
     updateCarouselPosition();
-    
     setTimeout(() => { isMoving = false; }, 100);
 });
 
@@ -139,6 +145,7 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
 
 
 
