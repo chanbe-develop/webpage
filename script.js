@@ -99,7 +99,7 @@ track.addEventListener('touchend', () => {
     const diff = movedBy - prevTranslate;
 
     // 50px以上動いていたら、半分まで行ってなくても次（または前）のカードへ
-    const threshold = 50; 
+    const threshold = 25; 
 
     if (diff < -threshold && index < maxIndex) {
         // 左へスワイプ（次へ）
@@ -139,5 +139,6 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
 
 
