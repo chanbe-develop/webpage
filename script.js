@@ -88,10 +88,30 @@ track.addEventListener('click', (e) => {
 
 track.addEventListener('touchend', () => {
     isDragging = false;
-    // ...（中略：これまでのtouchendの処理はそのまま）...
+    const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
+    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
+    const maxIndex = track.children.length - visibleCards;
+
+    // 指を離した瞬間の正確な位置を取得
+    const movedBy = parseFloat(track.style.transform.replace('translateX(', '').replace('px)', ''));
+    
+    // 【修正ポイント】移動距離の差分を計算
+    const diff = movedBy - prevTranslate;
+
+    // 50px以上動いていたら、半分まで行ってなくても次（または前）のカードへ
+    const threshold = 50; 
+
+    if (diff < -threshold && index < maxIndex) {
+        // 左へスワイプ（次へ）
+        index++;
+    } else if (diff > threshold && index > 0) {
+        // 右へスワイプ（前へ）
+        index--;
+    }
+    // それ以外の微小な動きなら、現在の index の位置に戻る
+
     updateCarouselPosition();
     
-    // 少し遅らせてから移動フラグをリセット（クリック判定との競合防止）
     setTimeout(() => { isMoving = false; }, 100);
 });
 
@@ -119,4 +139,5 @@ document.querySelectorAll('nav a').forEach(anchor => {
         }
     });
 });
+
 
