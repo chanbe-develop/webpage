@@ -67,3 +67,38 @@ document.querySelectorAll('nav a').forEach(anchor => {
     });
 });
 
+// --- カルーセルのスワイプ（フリック）対応 ---
+let touchStartX = 0;
+let touchEndX = 0;
+
+// 指が触れた時
+track.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+// 指が離れた時
+track.addEventListener('touchend', (e) => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}, { passive: true });
+
+// スワイプ判定
+function handleSwipe() {
+    const swipeThreshold = 50; // 50px以上動いたらスワイプとみなす
+    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
+    const maxIndex = track.children.length - visibleCards;
+
+    if (touchStartX - touchEndX > swipeThreshold) {
+        // 左へスワイプ（次へ）
+        if (index < maxIndex) {
+            index++;
+            moveCarousel();
+        }
+    } else if (touchEndX - touchStartX > swipeThreshold) {
+        // 右へスワイプ（前へ）
+        if (index > 0) {
+            index--;
+            moveCarousel();
+        }
+    }
+}
