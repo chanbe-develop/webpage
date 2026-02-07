@@ -1,98 +1,113 @@
-// 1. フェードインアニメーション (変更なし)
-const observerOptions = { threshold: 0.1 };
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('visible');
-    });
-}, observerOptions);
-document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-// 2. カルーセルの実装（スマホ対応版）
+// ==========================================
+// 1. 変数・共通設定
+// ==========================================
 const track = document.querySelector('.carousel-track');
 const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
-let index = 0;
 
-function moveCarousel() {
-    // カード1枚の幅 + gap(20px) を取得
+let index = 0;          // 現在表示しているカードの番号
+let startX = 0;         // タッチ開始位置
+let currentTranslate = 0; // 現在の移動量（px）
+let prevTranslate = 0;    // 前回の確定移動量（px）
+let isDragging = false; // ドラッグ中フラグ
+
+// ==========================================
+// 2. 共通アニメーション関数
+// ==========================================
+
+// カルーセルを特定の位置まで動かす
+function updateCarouselPosition() {
     const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
-    track.style.transform = `translateX(-${index * cardWidth}px)`;
+    prevTranslate = -index * cardWidth;
+    track.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+    track.style.transform = `translateX(${prevTranslate}px)`;
 }
 
+// ==========================================
+// 3. カルーセル：クリック操作
+// ==========================================
 nextBtn.addEventListener('click', () => {
-    // スマホなら1枚表示、PC（768px超）なら3枚表示と判断
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
-
-    if (index < maxIndex) {
-        index++;
-        moveCarousel();
-    }
+    if (index < maxIndex) index++;
+    updateCarouselPosition();
 });
 
 prevBtn.addEventListener('click', () => {
-    if (index > 0) {
-        index--;
-        moveCarousel();
-    }
+    if (index > 0) index--;
+    updateCarouselPosition();
 });
 
-// --- カルーセルのマウスホイール対応 ---
+// ==========================================
+// 4. カルーセル：マウスホイール操作
+// ==========================================
 track.addEventListener('wheel', (e) => {
-    // デフォルトの垂直スクロールを防止（Worksセクション上のみ）
     e.preventDefault();
-
-    // ホイールの回転方向に応じてインデックスを増減
-    // e.deltaY > 0 は下方向へのスクロール
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
 
     if (e.deltaY > 0) {
-        // 次へ
         if (index < maxIndex) index++;
     } else {
-        // 前へ
         if (index > 0) index--;
     }
+    updateCarouselPosition();
+}, { passive: false });
 
-    moveCarousel();
-}, { passive: false }); // preventDefaultを有効にするための設定
+// ==========================================
+// 5. カルーセル：リアルタイム・スワイプ
+// ==========================================
+track.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+    isDragging = true;
+    track.style.transition = 'none'; // 指で動かしている間はアニメをオフ
+}, { passive: true });
 
-// 3. スムーススクロール (変更なし)
+track.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    const currentX = e.touches[0].clientX;
+    const diff = currentX - startX;
+    track.style.transform = `translateX(${prevTranslate + diff}px)`;
+}, { passive: true });
+
+track.addEventListener('touchend', () => {
+    isDragging = false;
+    const cardWidth = document.querySelector('.work-card').offsetWidth + 20;
+    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
+    const maxIndex = track.children.length - visibleCards;
+
+    // 現在の位置から一番近いカードを計算
+    const movedBy = parseFloat(track.style.transform.replace('translateX(', '').replace('px)', ''));
+    index = Math.round(-movedBy / cardWidth);
+
+    // 範囲外ガード
+    if (index < 0) index = 0;
+    if (index > maxIndex) index = maxIndex;
+
+    updateCarouselPosition();
+});
+
+// ==========================================
+// 6. スクロールフェードイン (Intersection Observer)
+// ==========================================
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+// ==========================================
+// 7. スムーススクロール
+// ==========================================
 document.querySelectorAll('nav a').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
         e.preventDefault();
         const targetId = this.getAttribute('href');
-        document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
     });
 });
-
-// --- カルーセルのスワイプ対応（ブラッシュアップ版） ---
-let touchStartX = 0;
-
-// 指が触れた位置を記録
-track.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX;
-}, { passive: true });
-
-// 指が離れた時に距離を計算して動かす
-track.addEventListener('touchend', (e) => {
-    const touchEndX = e.changedTouches[0].screenX;
-    const swipeDistance = touchStartX - touchEndX; // 動いた距離
-    const swipeThreshold = 25; // 判定を少し甘く（25px）して反応を良くする
-
-    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
-    const maxIndex = track.children.length - visibleCards;
-
-    if (Math.abs(swipeDistance) > swipeThreshold) {
-        if (swipeDistance > 0) {
-            // 右から左へスワイプ（次へ）
-            if (index < maxIndex) index++;
-        } else {
-            // 左から右へスワイプ（前へ）
-            if (index > 0) index--;
-        }
-        moveCarousel();
-    }
-}, { passive: true });
-
