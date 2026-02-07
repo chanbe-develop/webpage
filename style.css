@@ -125,6 +125,8 @@ h2 {
     overflow: hidden;
     position: relative;
     transition: var(--transition);
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .work-card:hover {
@@ -182,6 +184,14 @@ h2 {
 .carousel-buttons button:hover {
     background: var(--accent-color);
     color: white;
+}
+
+.carousel-track {
+    /* スムーズに動くように transition を再確認 */
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    gap: 20px;
+    will-change: transform; /* ブラウザのアニメーションを最適化 */
 }
 
 /* SNS Section - Simple Link Style */
@@ -346,4 +356,5 @@ h2 {
         width: 100%;
     }
 }
+
 
