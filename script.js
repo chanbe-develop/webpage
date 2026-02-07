@@ -79,7 +79,7 @@ track.addEventListener('touchstart', (e) => {
 track.addEventListener('touchend', (e) => {
     const touchEndX = e.changedTouches[0].screenX;
     const swipeDistance = touchStartX - touchEndX; // 動いた距離
-    const swipeThreshold = 30; // 判定を少し甘く（30px）して反応を良くする
+    const swipeThreshold = 25; // 判定を少し甘く（25px）して反応を良くする
 
     const visibleCards = window.innerWidth <= 768 ? 1 : 3;
     const maxIndex = track.children.length - visibleCards;
@@ -95,3 +95,4 @@ track.addEventListener('touchend', (e) => {
         moveCarousel();
     }
 }, { passive: true });
+
