@@ -37,6 +37,27 @@ prevBtn.addEventListener('click', () => {
     }
 });
 
+// --- カルーセルのマウスホイール対応 ---
+track.addEventListener('wheel', (e) => {
+    // デフォルトの垂直スクロールを防止（Worksセクション上のみ）
+    e.preventDefault();
+
+    // ホイールの回転方向に応じてインデックスを増減
+    // e.deltaY > 0 は下方向へのスクロール
+    const visibleCards = window.innerWidth <= 768 ? 1 : 3;
+    const maxIndex = track.children.length - visibleCards;
+
+    if (e.deltaY > 0) {
+        // 次へ
+        if (index < maxIndex) index++;
+    } else {
+        // 前へ
+        if (index > 0) index--;
+    }
+
+    moveCarousel();
+}, { passive: false }); // preventDefaultを有効にするための設定
+
 // 3. スムーススクロール (変更なし)
 document.querySelectorAll('nav a').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -45,3 +66,4 @@ document.querySelectorAll('nav a').forEach(anchor => {
         document.querySelector(targetId).scrollIntoView({ behavior: 'smooth' });
     });
 });
+
